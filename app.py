@@ -1,15 +1,22 @@
 #!/usr/bin/env python
+from ast import List
 import pyotp
 import pyperclip
 import rumps
 import yaml
 import json
+from typing import Any, TextIO, TypedDict
 
+class SecretKey(TypedDict):
+    name: str
+    secret: str
+    prefix: str
+    suffix: str
 
 class PincerToken(object):
-    def __init__(self, secret="", prefix="", **kwargs):
+    def __init__(self, secrets_dict: SecretKey={}, prefix: str="", **kwargs):
         if "import_file" in kwargs:
-            f = open(kwargs["import_file"], "r")
+            f: TextIO = open(kwargs["import_file"], "r")
             if kwargs["import_file"].endswith(".yaml") or kwargs[
                 "import_file"
             ].endswith(".yml"):
@@ -39,7 +46,7 @@ class PincerToken(object):
 
         else:
 
-            self.secret = secret
+            self.secret = secrets_dict
             self.prefix = prefix
             self.app = rumps.App("PincerToken", "🦀")
             self.config = {
@@ -63,7 +70,7 @@ class PincerToken(object):
 
     def pintoken(self, sender):
         key = sender.title
-        pin_token = f"{self.secrets[key]['prefix'] if self.secrets[key]['prefix'] is not None else ''}{self.get_totp(self.secrets[key]['secret'])}{self.secrets[key]['suffix'] if self.secrets[key]['suffix'] is not None else ''}"
+        pin_token = f"{self.secrets[key]['prefix'] if 'prefix' in self.secrets[key] else ''}{self.get_totp(self.secrets[key]['secret'])}{self.secrets[key]['suffix'] if 'suffix' in self.secrets[key] else ''}"
         pyperclip.copy(pin_token)
 
     def run(self):
