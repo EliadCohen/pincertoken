@@ -6,6 +6,7 @@ import rumps
 import yaml
 import json
 from typing import Any, TextIO, TypedDict
+import os
 
 class SecretKey(TypedDict):
     name: str
@@ -48,9 +49,9 @@ class PincerToken(object):
 
             self.secret = secrets_dict
             self.prefix = prefix
-            self.app = rumps.App("PincerToken", "🦀")
+            self.app = rumps.App("PincerToken", "🦀2")
             self.config = {
-                "app_name": "PincerToken",
+                "app_name": "PincerToken2",
                 "action": "Generate OTP",
             }
             self.app = rumps.App(self.config["app_name"])
@@ -58,7 +59,7 @@ class PincerToken(object):
                 title=self.config["action"], callback=self.pintoken
             )
             self.app.menu = [self.generate_button]
-            self.app.title = "🦀"
+            self.app.title = "🦀2"
 
     def get_totp(self, key):
         totp = pyotp.TOTP(key)
@@ -78,5 +79,5 @@ class PincerToken(object):
 
 
 if __name__ == "__main__":
-    app = PincerToken(import_file="./secretsfile.yaml")
+    app = PincerToken(import_file="{os.path.expanduser("~")}/secretsfile.yaml")
     app.run()
