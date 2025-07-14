@@ -79,5 +79,5 @@ class PincerToken(object):
 
 
 if __name__ == "__main__":
-    app = PincerToken(import_file="{os.path.expanduser("~")}/secretsfile.yaml")
+    app = PincerToken(import_file="{os.path.expanduser('~')}/secretsfile.yaml")
     app.run()
